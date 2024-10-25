@@ -1,9 +1,12 @@
-import Router from 'components/Router';
+import Layout from 'components/Layout'
+import Router from 'components/Router'
 
 function App() {
   return (
-    <Router />
-  );
+    <Layout>
+      <Router />
+    </Layout>
+  )
 }
 
 export default App;
