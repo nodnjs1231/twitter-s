@@ -1,6 +1,5 @@
-export default function LoginPage(){
-    
-    return(
-        <div>LoginPage</div>
-    );
+import LoginForm from 'components/users/LoginForm';
+
+export default function LoginPage() {
+  return <LoginForm />;
 }
