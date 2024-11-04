@@ -2,6 +2,7 @@ import HomePage from 'pages/home';
 import NotificationsPage from 'pages/notifications';
 import PostListPage from 'pages/posts';
 import PostDetail from 'pages/posts/detail';
+import PostEdit from 'pages/posts/edit';
 import PostNew from 'pages/posts/new';
 import ProfilePage from 'pages/profile';
 import ProfileEdit from 'pages/profile/edit';
@@ -23,7 +24,7 @@ export default function Router({ isAuthenticated }: RouterProps) {
           <Route path="/posts" element={<PostListPage />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/posts/new" element={<PostNew />} />
-          <Route path="/posts/edit/:id" element={<PostNew />} />
+          <Route path="/posts/edit/:id" element={<PostEdit />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/edit" element={<ProfileEdit />} />
           <Route path="/notifications" element={<NotificationsPage />} />

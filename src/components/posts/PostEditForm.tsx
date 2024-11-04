@@ -1,35 +1,54 @@
-import { AuthContext } from 'components/context/AuthContext';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from 'firebaseApp';
-import { ChangeEvent, useContext, useState } from 'react';
+import { PostProps } from 'pages/home';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { FiImage } from 'react-icons/fi';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 interface Props {}
-export default function PostForm({}: Props) {
+export default function PostEditForm({}: Props) {
+  const params = useParams();
+  const [post, setPost] = useState<PostProps | null>(null);
   const [content, setContent] = useState<string>('');
-  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
   };
 
+  const getPost = useCallback(async () => {
+    if (params.id) {
+      const defRef = doc(db, 'posts', params.id);
+      const docSnap = await getDoc(defRef);
+      setPost({ ...(docSnap?.data() as PostProps), id: docSnap.id });
+      setContent(docSnap?.data()?.content);
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    if (params.id) getPost();
+  }, [getPost, params.id]);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      await addDoc(collection(db, 'posts'), {
-        content: content,
-        createdAt: new Date().toLocaleDateString('ko', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        }),
-        email: user?.email,
-        uid: user?.uid,
-      });
-      setContent('');
-      toast?.success('게시글을 생성했습니다.');
+      if (post && post.id) {
+        // 만약 post 데이터가 있다면, firestore로 데이터 수정
+        const postRef = doc(db, 'posts', post?.id);
+        await updateDoc(postRef, {
+          content: content,
+          updatedAt: new Date().toLocaleDateString('ko', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          }),
+        });
+
+        toast?.success('게시글을 수정했습니다.');
+        navigate(`/posts/${post.id}`);
+      }
     } catch (e: any) {
       console.log(e);
       toast?.error(e?.code);
@@ -70,7 +89,7 @@ export default function PostForm({}: Props) {
           onChange={handleFileUpload}
           className="hidden"
         />
-        <input type="submit" value="Tweet" className="post-form__submit-btn" />
+        <input type="submit" value="수정" className="post-form__submit-btn" />
       </div>
     </form>
   );
