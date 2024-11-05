@@ -11,6 +11,8 @@ export default function PostEditForm({}: Props) {
   const params = useParams();
   const [post, setPost] = useState<PostProps | null>(null);
   const [content, setContent] = useState<string>('');
+  const [hashTag, setHashTag] = useState<string>('');
+  const [tags, setTags] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -23,6 +25,7 @@ export default function PostEditForm({}: Props) {
       const docSnap = await getDoc(defRef);
       setPost({ ...(docSnap?.data() as PostProps), id: docSnap.id });
       setContent(docSnap?.data()?.content);
+      setTags(docSnap?.data()?.hashTags);
     }
   }, [params.id]);
 
@@ -39,6 +42,7 @@ export default function PostEditForm({}: Props) {
         const postRef = doc(db, 'posts', post?.id);
         await updateDoc(postRef, {
           content: content,
+          hashTags: tags,
           updatedAt: new Date().toLocaleDateString('ko', {
             hour: '2-digit',
             minute: '2-digit',
@@ -67,6 +71,27 @@ export default function PostEditForm({}: Props) {
     }
   };
 
+  const handleKeyUp = (e: any) => {
+    if (e.keyCode === 32 && e.target.value.trim() !== '') {
+      if (tags?.includes(e.target.value?.trim())) {
+        toast.error('같은 태그가 있습니다.');
+      } else {
+        setTags([...tags, hashTag]);
+        setHashTag('');
+      }
+      // 만약 같은 태그가 있다면 에러를 띄운다.
+      // 아니라면 해시태그 생성
+    }
+  };
+
+  const onChangeHashTag = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHashTag(e?.target?.value?.trim());
+  };
+
+  const removeHash = (tag: string) => {
+    setTags([...tags].filter((x) => x !== tag));
+  };
+
   return (
     <form className="post-form" onSubmit={onSubmit}>
       <textarea
@@ -78,6 +103,28 @@ export default function PostEditForm({}: Props) {
         onChange={onChange}
         placeholder="What is happening?"
       />
+      <div className="post-form__hashtags">
+        <div className="post-form__hashtags-outputs">
+          {tags?.map((tag, index) => (
+            <span
+              className="post-form__hashtags-tag"
+              key={index}
+              onClick={() => removeHash(tag)}
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+        <input
+          className="post-form__input"
+          name="hashtag"
+          id="hashtag"
+          placeholder="해시태그 + 스페이스바 입력"
+          onChange={onChangeHashTag}
+          onKeyUp={handleKeyUp}
+          value={hashTag}
+        />
+      </div>
       <div className="post-form__submit-area">
         <label htmlFor="file-input" className="post-form__file">
           <FiImage className="post-form__file-icon" />
