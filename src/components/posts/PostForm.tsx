@@ -1,25 +1,53 @@
 import { AuthContext } from 'components/context/AuthContext';
 import { addDoc, collection } from 'firebase/firestore';
-import { db } from 'firebaseApp';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { db, storage } from 'firebaseApp';
 import { ChangeEvent, useContext, useState } from 'react';
 import { FiImage } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {}
 export default function PostForm({}: Props) {
   const [content, setContent] = useState<string>('');
   const { user } = useContext(AuthContext);
   const [hashTag, setHashTag] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: any) => {
     e.preventDefault();
+    const {
+      target: { files },
+    } = e;
+
+    const file = files?.[0];
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onloadend = (e: any) => {
+      const { result } = e?.currentTarget;
+      setImageFile(result);
+    };
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    const key = `${user?.uid}/${uuidv4()}`;
+    // 참조 생성
+    const storageRef = ref(storage, key);
 
     try {
+      // 이미지 먼저 업로드
+      let imageUrl = '';
+      if (imageFile) {
+        const data = await uploadString(storageRef, imageFile, 'data_url');
+        imageUrl = await getDownloadURL(data?.ref);
+      }
+
+      // 업로드된 이미지 download URL 업데이트
       await addDoc(collection(db, 'posts'), {
         content: content,
         createdAt: new Date().toLocaleDateString('ko', {
@@ -30,14 +58,18 @@ export default function PostForm({}: Props) {
         email: user?.email,
         uid: user?.uid,
         hashTags: tags,
+        imageUrl: imageUrl,
       });
       setTags([]);
       setHashTag('');
       setContent('');
+      setImageFile(null);
       toast?.success('게시글을 생성했습니다.');
     } catch (e: any) {
       console.log(e);
       toast?.error(e?.code);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -74,6 +106,10 @@ export default function PostForm({}: Props) {
     setTags([...tags].filter((x) => x !== tag));
   };
 
+  const handleDeleteImage = () => {
+    setImageFile(null);
+  };
+
   return (
     <form className="post-form" onSubmit={onSubmit}>
       <textarea
@@ -108,17 +144,37 @@ export default function PostForm({}: Props) {
         />
       </div>
       <div className="post-form__submit-area">
-        <label htmlFor="file-input" className="post-form__file">
-          <FiImage className="post-form__file-icon" />
-        </label>
+        <div className="post-form__image-area">
+          <label htmlFor="file-input" className="post-form__file">
+            <FiImage className="post-form__file-icon" />
+          </label>
+          <input
+            type="file"
+            name="file-input"
+            id="file-input"
+            accept="image/*"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          {imageFile && (
+            <div className="post-form__attacthment">
+              <img src={imageFile} alt="attacthment" width={100} height={100} />
+              <button
+                className="post-form__clear-btn"
+                type="button"
+                onClick={handleDeleteImage}
+              >
+                Clear
+              </button>
+            </div>
+          )}
+        </div>
         <input
-          type="file"
-          name="file-input"
-          accept="image/*"
-          onChange={handleFileUpload}
-          className="hidden"
+          type="submit"
+          value="Tweet"
+          className="post-form__submit-btn"
+          disabled={isSubmitting}
         />
-        <input type="submit" value="Tweet" className="post-form__submit-btn" />
       </div>
     </form>
   );

@@ -3836,6 +3836,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/uuid@npm:10.0.0"
+  checksum: e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
+  languageName: node
+  linkType: hard
+
 "@types/ws@npm:^8.5.5":
   version: 8.5.12
   resolution: "@types/ws@npm:8.5.12"
@@ -13666,6 +13673,7 @@ __metadata:
     "@types/node": ^16.7.13
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0
+    "@types/uuid": ^10.0.0
     firebase: ^11.0.1
     react: ^18.3.1
     react-dom: ^18.3.1
@@ -13675,6 +13683,7 @@ __metadata:
     react-toastify: ^10.0.6
     sass: ^1.80.4
     typescript: ^4.4.2
+    uuid: ^11.0.2
     web-vitals: ^2.1.0
   languageName: unknown
   linkType: soft
@@ -13998,6 +14007,15 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "uuid@npm:11.0.2"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 9b322963db18623d22f46cf98f51b45830f956715577fb24d272ec29324fe919bedbedc6e29627aced490ac3f982ee53c80441651daf4a6ef74f2af58689f2e0
   languageName: node
   linkType: hard
 
