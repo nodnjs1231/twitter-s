@@ -46,7 +46,7 @@ export default function ProfilePage() {
           <img
             src={user?.photoURL || PROFILE_DEFUALT_URL}
             alt="profile"
-            className="profile__img"
+            className="profile__image"
             width={100}
             height={100}
           />
