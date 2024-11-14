@@ -121,7 +121,7 @@ export default function PostBox({ post }: Props) {
         </button>
         <button type="button" className="post__comments">
           <FaRegComment />
-          {post?.comments || 0}
+          {post?.comments?.length || 0}
         </button>
       </div>
     </div>

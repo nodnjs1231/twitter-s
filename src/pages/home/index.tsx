@@ -4,6 +4,7 @@ import PostBox from 'components/posts/PostBox';
 import { AuthContext } from 'components/context/AuthContext';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from 'firebaseApp';
+import { CommentProps } from 'components/comments/CommentBox';
 
 export interface PostProps {
   id: string;
@@ -14,7 +15,7 @@ export interface PostProps {
   profileUrl?: string;
   likes?: string[];
   likeCount?: number;
-  comments?: any;
+  comments?: CommentProps[];
   hashTags?: string[];
   imageUrl: string;
 }
