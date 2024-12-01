@@ -2,6 +2,7 @@ import { AuthContext } from 'components/context/AuthContext';
 import { addDoc, collection } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { db, storage } from 'firebaseApp';
+import useTranslation from 'hooks/useTranslation';
 import { ChangeEvent, useContext, useState } from 'react';
 import { FiImage } from 'react-icons/fi';
 import { toast } from 'react-toastify';
@@ -15,6 +16,7 @@ export default function PostForm({}: Props) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
+  const t = useTranslation();
 
   const handleFileUpload = (e: any) => {
     e.preventDefault();
@@ -119,7 +121,7 @@ export default function PostForm({}: Props) {
         id="content"
         value={content}
         onChange={onChange}
-        placeholder="What is happening?"
+        placeholder={t('POST_PLACEHOLDER')}
       />
       <div className="post-form__hashtags">
         <div className="post-form__hashtags-outputs">
@@ -137,7 +139,7 @@ export default function PostForm({}: Props) {
           className="post-form__input"
           name="hashtag"
           id="hashtag"
-          placeholder="해시태그 + 스페이스바 입력"
+          placeholder={t('POST_HASHTAG')}
           onChange={onChangeHashTag}
           onKeyUp={handleKeyUp}
           value={hashTag}

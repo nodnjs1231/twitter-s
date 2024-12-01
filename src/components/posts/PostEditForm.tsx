@@ -20,6 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import PostHeader from './PostHeader';
+import useTranslation from 'hooks/useTranslation';
 
 interface Props {}
 export default function PostEditForm({}: Props) {
@@ -32,6 +33,7 @@ export default function PostEditForm({}: Props) {
   const [tags, setTags] = useState<string[]>([]);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const t = useTranslation();
 
   const handleFileUpload = (e: any) => {
     e.preventDefault();
@@ -160,7 +162,7 @@ export default function PostEditForm({}: Props) {
           id="content"
           value={content}
           onChange={onChange}
-          placeholder="What is happening?"
+          placeholder={t('POST_PLACEHOLDER')}
         />
         <div className="post-form__hashtags">
           <div className="post-form__hashtags-outputs">
@@ -178,7 +180,7 @@ export default function PostEditForm({}: Props) {
             className="post-form__input"
             name="hashtag"
             id="hashtag"
-            placeholder="해시태그 + 스페이스바 입력"
+            placeholder={t('POST_HASHTAG')}
             onChange={onChangeHashTag}
             onKeyUp={handleKeyUp}
             value={hashTag}
@@ -217,7 +219,7 @@ export default function PostEditForm({}: Props) {
           </div>
           <input
             type="submit"
-            value="수정"
+            value={t('BUTTON_EDIT')}
             className="post-form__submit-btn"
             disabled={isSubmitting}
           />

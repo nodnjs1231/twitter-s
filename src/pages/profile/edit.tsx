@@ -8,6 +8,7 @@ import {
   uploadString,
 } from 'firebase/storage';
 import { storage } from 'firebaseApp';
+import useTranslation from 'hooks/useTranslation';
 import { useContext, useEffect, useState } from 'react';
 import { FiImage } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +23,7 @@ export default function ProfileEdit() {
   const { user } = useContext(AuthContext);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
+  const t = useTranslation();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -125,7 +127,7 @@ export default function ProfileEdit() {
                 type="button"
                 onClick={handleDeleteImage}
               >
-                삭제
+                {t('BUTTON_DELETE')}
               </button>
             </div>
           )}
@@ -145,7 +147,7 @@ export default function ProfileEdit() {
             </div>
             <input
               type="submit"
-              value="프로필 수정"
+              value={t('BUTTON_EDIT_PROFILE')}
               className="post-form__submit-btn"
               disabled={isSubmitting}
             />
