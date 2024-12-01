@@ -8,6 +8,7 @@ import { AuthContext } from './context/AuthContext';
 import { getAuth, signOut } from 'firebase/auth';
 import { app } from 'firebaseApp';
 import { toast } from 'react-toastify';
+import { IoMdNotificationsOutline } from 'react-icons/io';
 
 interface Props {}
 export default function MenuList({}: Props) {
@@ -37,6 +38,10 @@ export default function MenuList({}: Props) {
         <button type="button" onClick={() => navigate('/search')}>
           <AiOutlineSearch />
           Search
+        </button>
+        <button type="button" onClick={() => navigate('/notifications')}>
+          <IoMdNotificationsOutline />
+          Notification
         </button>
         {user === null ? (
           <button type="button" onClick={() => navigate('/users/login')}>
