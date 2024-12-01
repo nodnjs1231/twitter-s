@@ -75,3 +75,4 @@ firebase.json
 
 # Others
 *.lock
+.vercel
